@@ -1,8 +1,9 @@
 package monitoring.checks;
 
 import java.io.IOException;
-import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
 
 import monitoring.CheckFailedException;
@@ -12,7 +13,7 @@ public class TcpPortOpenCheck extends AbstractCheck {
     private final String host;
     private final int port;
 
-    public TcpPortOpenCheck(String host, int port, int timeout) {
+    public TcpPortOpenCheck(final String host, final int port, final int timeout) {
         this.host = host;
         this.port = port;
         this.timeout = timeout;
@@ -23,20 +24,21 @@ public class TcpPortOpenCheck extends AbstractCheck {
         this.lastRan = System.currentTimeMillis();
         Socket socket = null;
         try {
-            socket = new Socket(InetAddress.getByName(this.host), this.port);
-            socket.setSoTimeout(1000 * this.timeout);
+            final SocketAddress sockaddr = new InetSocketAddress(this.host, this.port);
+            socket = new Socket();
+            socket.connect(sockaddr, 1000 * this.timeout);
             markUp();
-        } catch (UnknownHostException e) {
+        } catch (final UnknownHostException e) {
             markDown(e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             markDown(e);
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException e) {
             markDown(e);
         } finally {
             if (socket != null) {
                 try {
                     socket.close();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -45,7 +47,7 @@ public class TcpPortOpenCheck extends AbstractCheck {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append("TcpOpenCheck [host=");
         builder.append(this.host);
         builder.append(", port=");

@@ -1,4 +1,4 @@
-package monitoring;
+package monitoring.checks;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -11,7 +11,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
-import monitoring.checks.AbstractCheck;
+import monitoring.CheckFailedException;
 
 public class DNSCheck extends AbstractCheck {
 

@@ -17,7 +17,7 @@ public abstract class AbstractCheck implements Monitor {
         this.state = State.UP;
     }
 
-    protected void markDown(Exception e) throws CheckFailedException {
+    protected void markDown(final Exception e) throws CheckFailedException {
         this.lastFailed = System.currentTimeMillis();
         this.state = State.DOWN;
         throw new CheckFailedException(e);
